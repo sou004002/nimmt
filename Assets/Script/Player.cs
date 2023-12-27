@@ -7,6 +7,7 @@ using TMPro;
 public class Player : MonoBehaviourPunCallbacks
 {
     private GameObject Deck;
+    [SerializeField] private GameObject cardPrefab;
     [SerializeField] TextMeshProUGUI intHandNumText;
     private List<int> intHandArray;
     // private Deck _deck;
@@ -22,7 +23,22 @@ public class Player : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        intHandNumText.text=string.Join(", ",intHandArray);
+        if(photonView.IsMine)
+        {
+            intHandNumText.text=string.Join(", ",intHandArray);
+            if(Input.GetMouseButtonDown(1))
+            {
+                // Debug.Log("photonView.Controller");
+                Deck=GameObject.FindGameObjectsWithTag("Deck")[0];
+                _deckPhoton=Deck.GetComponent<PhotonView>();
+                photonView.RPC(nameof(DrawCard),RpcTarget.All,Deck.GetComponent<Deck>().GetDecktop());
+                GameObject card=Instantiate(cardPrefab,new Vector3(-6+(intHandArray.Count)*2,1.5f,-7.0f),Quaternion.Euler(36,0,0));
+                card.GetComponent<Card>().Init(Deck.GetComponent<Deck>().GetDecktop());
+                _deckPhoton.RPC("Draw",RpcTarget.All);
+                // Debug.Log(photonView.Controller);
+                
+            }
+        }
     }
     public List<int> GetIntHandArray()
     {
@@ -48,12 +64,9 @@ public class Player : MonoBehaviourPunCallbacks
     [PunRPC]
     public void DrawCard(int card)
     {
-        if(photonView.IsMine)
-        {
         Debug.Log("draw");
-        Debug.Log(photonView.Controller);
         intHandArray.Add(card);
-        }
+        // Debug.Log(string.Join(", ",intHandArray));
     }
     // public void CopyIntHandArray(List<int> handarray)
     // {

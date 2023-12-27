@@ -396,4 +396,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6884843dd8ca9e64a8a5afc6146de502, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cardPrefab: {fileID: 2622482231728499363, guid: 6f172335c1e34c241baaae8308280f34, type: 3}
   intHandNumText: {fileID: 4999739638615323807}

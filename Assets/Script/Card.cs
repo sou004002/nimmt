@@ -16,6 +16,7 @@ public class Card : MonoBehaviour
     {
         images = Resources.LoadAll<Sprite>("Sprites/");
         GameObject frontImage=transform.Find("FrontImage").gameObject;
+        Debug.Log(number);
         SetCardNum(number);
         frontImage.GetComponent<SpriteRenderer>().sprite=images[number];
     }
