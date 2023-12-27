@@ -83,11 +83,14 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
 
     private void Update()
     {
-        intDeckNumText.text=String.Join(",",GetIntDeckArray());
-        if(Input.GetMouseButtonDown(1))
+        if(intDeckArray!=null)
         {
-            photonView.RPC(nameof(Draw),RpcTarget.All);
+        intDeckNumText.text=String.Join(",",GetIntDeckArray());
         }
+        // if(Input.GetMouseButtonDown(1))
+        // {
+        //     photonView.RPC(nameof(Draw),RpcTarget.All);
+        // }
     }
 
 
@@ -95,7 +98,8 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public void Draw(PhotonMessageInfo info)
     {
-        playerPrefabs=GameObject.FindGameObjectsWithTag("Player");
+        // Debug.Log(info.Sender.ActorNumber);
+        // playerPrefabs=GameObject.FindGameObjectsWithTag("Player");
         List<int> deckArray=new List<int>();
         foreach(int i in intDeckArray)
         {
@@ -103,15 +107,22 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
         }
         int removedCard=deckArray[0];
         deckArray.RemoveAt(0);
-        foreach(var obj in playerPrefabs)
-        {
-            PhotonView _playerPhoton=obj.GetComponent<PhotonView>();
-            if(_playerPhoton!=null && _playerPhoton.IsMine)
-            {
-                Debug.Log("a");
-                _playerPhoton.RPC("DrawCard",RpcTarget.All,removedCard);
-            }
-        }
+        // int index=1;
+        // foreach(var obj in playerPrefabs)
+        // {
+        //     Debug.Log(obj.GetComponent<PhotonView>().Controller);
+        //     if(info.Sender.ActorNumber==index)
+        //     {
+        //         Debug.Log("for");
+        //         PhotonView _playerPhoton=obj.GetComponent<PhotonView>();
+        //         if(_playerPhoton!=null && _playerPhoton.IsMine)
+        //         {
+        //             _playerPhoton.RPC("DrawCard",RpcTarget.Others,removedCard);
+        //         }
+        //         break;
+        //     }
+        //     index++;
+        // }
         CopyIntDeckArray(deckArray);
     }
 
