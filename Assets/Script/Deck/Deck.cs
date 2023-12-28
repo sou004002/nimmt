@@ -1,4 +1,3 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -18,15 +17,6 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
     public void generateDeckArray()//デッキ作成
     {
         List<int> deckArray=new List<int>();
-        // if(deckArray==null)
-        // {
-        //     deckArray=new List<int>();
-        // }
-        // else
-        // {
-        //     deckArray.Clear();
-        // }
-
         for (int i=1;i<105;i++)
         {
             deckArray.Add(i);
@@ -42,20 +32,8 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
         }
         CopyIntDeckArray(deckArray);
     }
-    // public List<int> GetDeckArray()
-    // {
-    //     foreach(int i in deckArray)
-    //     {
-    //         Debug.Log(i);
-    //     }
-    //     return deckArray;
-    // }
     public int[] GetIntDeckArray()
     {
-        // foreach(int i in intDeckArray)
-        // {
-        //     Debug.Log(i);
-        // }
         return intDeckArray;
     }
     public void CopyIntDeckArray(List<int> deckarray)
@@ -71,26 +49,12 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
     {
         return intDeckArray[0];
     }
-    // public void CopyDeckArray()
-    // {
-    //     deckArray=new List<int>();
-    //     for(int i=0;i<intDeckArray.Length;i++)
-    //     {
-    //         deckArray.Add(intDeckArray[i]);
-    //     }
-    // }
-
-
     private void Update()
     {
         if(intDeckArray!=null)
         {
-        intDeckNumText.text=String.Join(",",GetIntDeckArray());
+            intDeckNumText.text=String.Join(",",GetIntDeckArray());
         }
-        // if(Input.GetMouseButtonDown(1))
-        // {
-        //     photonView.RPC(nameof(Draw),RpcTarget.All);
-        // }
     }
 
 
@@ -98,8 +62,6 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
     [PunRPC]
     public void Draw(PhotonMessageInfo info)
     {
-        // Debug.Log(info.Sender.ActorNumber);
-        // playerPrefabs=GameObject.FindGameObjectsWithTag("Player");
         List<int> deckArray=new List<int>();
         foreach(int i in intDeckArray)
         {
@@ -107,31 +69,17 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
         }
         int removedCard=deckArray[0];
         deckArray.RemoveAt(0);
-        // int index=1;
-        // foreach(var obj in playerPrefabs)
-        // {
-        //     Debug.Log(obj.GetComponent<PhotonView>().Controller);
-        //     if(info.Sender.ActorNumber==index)
-        //     {
-        //         Debug.Log("for");
-        //         PhotonView _playerPhoton=obj.GetComponent<PhotonView>();
-        //         if(_playerPhoton!=null && _playerPhoton.IsMine)
-        //         {
-        //             _playerPhoton.RPC("DrawCard",RpcTarget.Others,removedCard);
-        //         }
-        //         break;
-        //     }
-        //     index++;
-        // }
         CopyIntDeckArray(deckArray);
     }
 
-    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) {
-            if (stream.IsWriting) {
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
+    {
+            if(stream.IsWriting)
+            {
                 stream.SendNext(GetIntDeckArray());
-            } else {
+            } else
+            {
                 intDeckArray = (int[])stream.ReceiveNext();
             }
-        }
-
+    }
 }
