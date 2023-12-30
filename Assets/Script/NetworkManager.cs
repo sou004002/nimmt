@@ -33,7 +33,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
                 GameObject deckArray=PhotonNetwork.InstantiateRoomObject("Deck",Vector3.zero,Quaternion.identity);
                 GameObject gameManager=PhotonNetwork.InstantiateRoomObject("GameManager",Vector3.zero,Quaternion.identity);
                 deckArray.GetComponent<Deck>().generateDeckArray();
-                gameManager.GetComponent<PhotonView>().RPC("Init",RpcTarget.All);
+                gameManager.GetComponent<FieldManager>().Init();
             }
 
         }

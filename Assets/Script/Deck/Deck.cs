@@ -76,7 +76,7 @@ public class Deck : MonoBehaviourPunCallbacks,IPunObservable
     {
             if(stream.IsWriting)
             {
-                stream.SendNext(GetIntDeckArray());
+                stream.SendNext(intDeckArray);
             } else
             {
                 intDeckArray = (int[])stream.ReceiveNext();

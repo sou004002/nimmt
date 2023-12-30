@@ -9,7 +9,11 @@ using TMPro;
 
 public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
 {
-    private int[,] fieldCards;
+    private int[] fieldCards01;
+    private int[] fieldCards02;
+    private int[] fieldCards03;
+    private int[] fieldCards04;
+
     private const int ROWNUM=4;
     [SerializeField] TextMeshProUGUI FieldCardsText;
     private GameObject Deck;
@@ -22,8 +26,9 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
 
     void Update()
     {
-        if(fieldCards!=null)
+        if(!(fieldCards01==null||fieldCards02==null||fieldCards03==null||fieldCards04==null))
         {
+            Debug.Log("a");
             FieldCardsText.text=GetFieldCards();
         }
     }
@@ -31,13 +36,24 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
     public string GetFieldCards()
     {
         string str = "";
-        for (int i = 0;i < fieldCards.GetLength(0);i++)
+        for (int j = 0; j < fieldCards01.Length; j++)
         {
-            for (int j = 0; j < fieldCards.GetLength(1); j++)
-            {
-                str = str + fieldCards[i, j] + " ";
-            }
-            str+=" | ";
+            str = str + fieldCards01[j] + " ";
+        }
+        str+=" | ";
+        for (int j = 0; j < fieldCards02.Length; j++)
+        {
+            str = str + fieldCards02[j] + " ";
+        }
+        str+=" | ";
+        for (int j = 0; j < fieldCards03.Length; j++)
+        {
+            str = str + fieldCards03[j] + " ";
+        }
+        str+=" | ";
+        for (int j = 0; j < fieldCards04.Length; j++)
+        {
+            str = str + fieldCards04[j] + " ";
         }
         return str;
     }
@@ -61,42 +77,46 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
     //         playedCards[i]=tmparray[i];
     //     }
     // }
-    [PunRPC]
     public void Init()
     {
-        fieldCards=new int[ROWNUM,1];
+        fieldCards01=new int[1];
+        fieldCards02=new int[1];
+        fieldCards03=new int[1];
+        fieldCards04=new int[1];
+
         Deck=GameObject.FindGameObjectsWithTag("Deck")[0];
         _deckPhoton=Deck.GetComponent<PhotonView>();
         _deck=Deck.GetComponent<Deck>();
-        for(int i=0;i<ROWNUM;i++)
-        {
-            fieldCards[i,0]=(_deck.GetDecktop());
-            Debug.Log(fieldCards[i,0]);
-            _deckPhoton.RPC("Draw",RpcTarget.All);
-        }
+        fieldCards01[0]=(_deck.GetDecktop());
+        _deckPhoton.RPC("Draw",RpcTarget.All);
+
+        fieldCards02[0]=(_deck.GetDecktop());
+        _deckPhoton.RPC("Draw",RpcTarget.All);
+
+        fieldCards03[0]=(_deck.GetDecktop());
+        _deckPhoton.RPC("Draw",RpcTarget.All);
+
+        fieldCards04[0]=(_deck.GetDecktop());
+        _deckPhoton.RPC("Draw",RpcTarget.All);
+        Debug.Log(fieldCards01==null||fieldCards02==null||fieldCards03==null||fieldCards04==null);
+
     }
-    async void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
+     
+    void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
     {
             if(stream.IsWriting)
             {
-                for (int i = 0;i < fieldCards.GetLength(0);i++)
-                {
-                    for (int j = 0; j < fieldCards.GetLength(1); j++)
-                    {
-                        stream.SendNext(fieldCards[i,j]);
-                    }
-                }
+                stream.SendNext(fieldCards01);
+                stream.SendNext(fieldCards02);
+                stream.SendNext(fieldCards03);
+                stream.SendNext(fieldCards04);
             } 
             else
             {
-                for (int i = 0;i < fieldCards.GetLength(0);i++)
-                {
-                    for (int j = 0; j < fieldCards.GetLength(1); j++)
-                    {
-                        fieldCards[i,j]=(int)stream.ReceiveNext();
-                    }
-                }
-
+                fieldCards01=(int[])stream.ReceiveNext();
+                fieldCards02=(int[])stream.ReceiveNext();
+                fieldCards03=(int[])stream.ReceiveNext();
+                fieldCards04=(int[])stream.ReceiveNext();
             }
     }
 }
