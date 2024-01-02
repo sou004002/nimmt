@@ -6,6 +6,8 @@ using Photon.Pun;
 public class CardClick : MonoBehaviourPunCallbacks,IPointerClickHandler
 {
     private GameObject[] players;
+    private GameObject[] cards;
+
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -22,7 +24,13 @@ public class CardClick : MonoBehaviourPunCallbacks,IPointerClickHandler
                     obj.GetComponent<PhotonView>().RPC("PlayCard",RpcTarget.All,card);
                 }
             }
-            Destroy(this.gameObject);
+            cards=GameObject.FindGameObjectsWithTag("Card");
+            foreach(GameObject c in cards)
+            {
+                c.GetComponent<Card>().SetIsdrawing(true);
+            }
+            GetComponent<Card>().SetIsdrawing(false);
+            //Destroy(this.gameObject);
 
         }
     }

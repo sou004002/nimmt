@@ -7,8 +7,11 @@ public class NetworkManager : MonoBehaviourPunCallbacks
 {
     [SerializeField]private GameObject camera;
     private int playerOffset=20;//プレイヤー同士の間隔
+    private static int nextID=1;
+    GameObject deckArray;
     private void Start() {
         // PhotonServerSettingsの設定内容を使ってマスターサーバーへ接続する
+        PhotonNetwork.NickName = "Player";
         Debug.Log("Setting");
         PhotonNetwork.ConnectUsingSettings();
     }
@@ -20,7 +23,7 @@ public class NetworkManager : MonoBehaviourPunCallbacks
     }
 
     // ゲームサーバーへの接続が成功した時に呼ばれるコールバック
-    public override void OnJoinedRoom() {
+    public override void OnJoinedRoom() { //ルームオブジェクトの処理のみ行う
         int playerNumber=PhotonNetwork.CurrentRoom.PlayerCount;
         var position = new Vector3(0,playerNumber*playerOffset,0);
         GameObject player=PhotonNetwork.Instantiate("Player", position, Quaternion.identity);
@@ -28,14 +31,10 @@ public class NetworkManager : MonoBehaviourPunCallbacks
         //それ以外なら、山札から手札配る
         if(playerNumber==1)
         {
-            if(PhotonNetwork.IsMasterClient)
-            {
-                GameObject deckArray=PhotonNetwork.InstantiateRoomObject("Deck",Vector3.zero,Quaternion.identity);
-                GameObject gameManager=PhotonNetwork.InstantiateRoomObject("GameManager",Vector3.zero,Quaternion.identity);
-                deckArray.GetComponent<Deck>().generateDeckArray();
-                gameManager.GetComponent<FieldManager>().Init();
-            }
-
+            deckArray=PhotonNetwork.InstantiateRoomObject("Deck",Vector3.zero,Quaternion.identity);
+            GameObject gameManager=PhotonNetwork.InstantiateRoomObject("GameManager",new Vector3(-5,-5,0),Quaternion.identity);
+            deckArray.GetComponent<Deck>().generateDeckArray();
+            gameManager.GetComponent<FieldManager>().Init();
         }
     }
 }
