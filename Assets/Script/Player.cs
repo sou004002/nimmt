@@ -27,8 +27,6 @@ public class Player : MonoBehaviourPunCallbacks
     void Start()
     {
         intHandArray=new List<int>();
-        nickName=$"{photonView.Owner.NickName}({photonView.OwnerActorNr})";
-        HP=DEFAULT_HP;
         //この後すぐにカードを引くとintHandArrayがnullになる
     }
 
@@ -74,10 +72,6 @@ public class Player : MonoBehaviourPunCallbacks
         return playedCard;
     }
 
-    public int GetHP()
-    {
-        return HP;
-    }
     public void removeCard(int card)
     {
         intHandArray.Remove(card);

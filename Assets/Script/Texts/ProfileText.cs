@@ -26,15 +26,12 @@ public class ProfileText : MonoBehaviour
     private void UpdateLabel()
     {
         var players=PhotonNetwork.PlayerList;
-        foreach(var player in players)
-        {
-            Debug.Log(player);
-        }
+
         // Array.Sort(
         //     players,
         //     (p1, p2) => {
         //         // スコアが多い順にソートする
-        //         int diff = p2.GetHP() - p1.GetHP();
+        //         int diff = p2.GetScore() - p1.GetScore();
         //         if (diff != 0) {
         //             return diff;
         //         }
@@ -45,10 +42,8 @@ public class ProfileText : MonoBehaviour
         // builder.Clear();
         // foreach(var player in players)
         // {
-        //     builder.AppendLine($"{player.NickName}({player.ActorNumber}) - {player.GetHP()}");
+        //     builder.AppendLine($"{player.NickName}({player.ActorNumber}) - {player.GetScore()}");
         // }
         // label.text=builder.ToString();
-
-
     }
 }
