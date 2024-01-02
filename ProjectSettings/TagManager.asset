@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Deck
   - GameManager
+  - Card
+  - Profile
   layers:
   - Default
   - TransparentFX

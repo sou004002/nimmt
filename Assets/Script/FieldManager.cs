@@ -19,17 +19,16 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
     private GameObject Deck;
     private PhotonView _deckPhoton;
     private Deck _deck;
-    void Start()
-    {
-
-    }
 
     void Update()
     {
         if(!(fieldCards01==null||fieldCards02==null||fieldCards03==null||fieldCards04==null))
         {
-            Debug.Log("a");
             FieldCardsText.text=GetFieldCards();
+        }
+        if(Input.GetMouseButtonDown(2))
+        {
+            Judge();
         }
     }
 
@@ -58,25 +57,6 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
         return str;
     }
 
-    // public void PlayCard(int card)
-    // {
-    //     List<int> tmpArray=new List<int>();
-    //     foreach(int i in playedCards)
-    //     {
-    //         tmpArray.Add(i);
-    //     }
-    //     tmpArray.Add(card);
-    //     CopyIntDeckArray(tmpArray);
-    // }
-
-    // public void CopyIntDeckArray(List<int> tmparray)
-    // {
-    //     playedCards=new int[tmparray.Count];
-    //     for(int i=0;i<playedCards.Length;i++)
-    //     {
-    //         playedCards[i]=tmparray[i];
-    //     }
-    // }
     public void Init()
     {
         fieldCards01=new int[1];
@@ -98,10 +78,95 @@ public class FieldManager : MonoBehaviourPunCallbacks,IPunObservable
 
         fieldCards04[0]=(_deck.GetDecktop());
         _deckPhoton.RPC("Draw",RpcTarget.All);
-        Debug.Log(fieldCards01==null||fieldCards02==null||fieldCards03==null||fieldCards04==null);
+    }
+
+    public void Judge()
+    {
+        GameObject[] players=GameObject.FindGameObjectsWithTag("Player");
+        List<(int,int)> JudgeList=new List<(int,int)>();
+        foreach(GameObject p in players)
+        {
+            Player _player=p.GetComponent<Player>();
+            (int,int) t = (p.GetComponent<PhotonView>().OwnerActorNr,_player.GetPlayedCard());
+            JudgeList.Add(t);
+            _player.removeCard(_player.GetPlayedCard());
+            foreach(int i in _player.GetIntHandArray())
+            {
+                Debug.Log(i);
+            }
+        }
+        JudgeList.Sort((tuple1,tuple2) => tuple1.Item2.CompareTo(tuple2.Item2));
+        for(int i=0;i<players.Length;i++)
+        {
+            List<int> lastCards=new List<int>();
+            lastCards.Add(fieldCards01[fieldCards01.Length-1]);
+            lastCards.Add(fieldCards02[fieldCards02.Length-1]);
+            lastCards.Add(fieldCards03[fieldCards03.Length-1]);
+            lastCards.Add(fieldCards04[fieldCards04.Length-1]);
+            foreach(var lc in lastCards)
+            {
+                Debug.Log(lc);
+            }
+            int playRowNum=-1;
+            int cardDiff=105;
+            for(int j=0;j<ROWNUM;j++)
+            {
+                if(JudgeList[i].Item2-lastCards[j]>0)
+                {
+                    if(cardDiff>=(JudgeList[i].Item2-lastCards[j]))
+                    {
+                        cardDiff=JudgeList[i].Item2-lastCards[j];
+                        playRowNum=j;
+                    }
+                }
+            }
+            Debug.Log(playRowNum);
+            if(playRowNum==-1)
+            {
+                //取る行を選ばせる処理
+                continue;
+            }
+            switch(playRowNum)
+            {
+                case 0:
+                    fieldCards01=AddFieldCard(fieldCards01,JudgeList[i].Item2);
+                    Debug.Log("0");
+                    break;
+                case 1:
+                    fieldCards02=AddFieldCard(fieldCards02,JudgeList[i].Item2);
+                    Debug.Log("1");
+                    break;
+                case 2:
+                    fieldCards03=AddFieldCard(fieldCards03,JudgeList[i].Item2);
+                    Debug.Log("2");
+                    break;
+                case 3:
+                    fieldCards04=AddFieldCard(fieldCards04,JudgeList[i].Item2);
+                    Debug.Log("3");
+                    break;
+                default:
+                    break;
+            }
+        }
 
     }
-     
+
+
+    public int[] AddFieldCard(int[] fieldcard,int card)
+    {
+        List<int> tmpList=new List<int>();
+        foreach(int i in fieldcard)
+        {
+            tmpList.Add(i);
+        }
+        tmpList.Add(card);
+        int[] newFieldCard=new int[tmpList.Count];
+        for(int i=0;i<newFieldCard.Length;i++)
+        {
+            newFieldCard[i]=tmpList[i];
+        }
+        return newFieldCard;
+    }
     void IPunObservable.OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info) 
     {
             if(stream.IsWriting)
