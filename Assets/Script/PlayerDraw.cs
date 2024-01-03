@@ -56,9 +56,10 @@ public class PlayerDraw : MonoBehaviourPunCallbacks
             _deckPhoton=deck.GetComponent<PhotonView>();
             _deck=deck.GetComponent<Deck>();
             photonView.RPC(nameof(DrawCard),RpcTarget.All,_deck.GetDecktop());
-            GameObject card=PhotonNetwork.Instantiate("Card",new Vector3(-6+(intHandArray.Count)*2,-1.5f,-7.0f),Quaternion.Euler(36,0,0));
-            card.GetComponent<Card>().Init(deck.GetComponent<Deck>().GetDecktop());
-            _deckPhoton.RPC("Draw",RpcTarget.All);
+            //カードボタンを生成、数字と画像を設定
+            // GameObject cardButton=Instantiate("Card",new Vector3(-6+(intHandArray.Count)*2,-1.5f,-7.0f),Quaternion.Euler(36,0,0));
+            // card.GetComponent<Card>().Init(deck.GetComponent<Deck>().GetDecktop());
+            _deckPhoton.RPC("Draw",RpcTarget.All);//一番上を消す
         } 
     }
     // Update is called once per frame
