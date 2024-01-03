@@ -5,7 +5,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-public class Player : MonoBehaviourPunCallbacks
+public class PlayerDraw : MonoBehaviourPunCallbacks
 {
     private GameObject deck;
     private GameObject GameManager;
@@ -15,7 +15,7 @@ public class Player : MonoBehaviourPunCallbacks
     private string nickName;
     // [SerializeField] GameObject cardPrefab;
 
-    [SerializeField] TextMeshProUGUI intHandNumText;
+    // [SerializeField] TextMeshProUGUI intHandNumText;
     private List<int> intHandArray=new List<int>();
     private PhotonView _deckPhoton;
     private Deck _deck;
@@ -27,14 +27,12 @@ public class Player : MonoBehaviourPunCallbacks
     void Start()
     {
         intHandArray=new List<int>();
-        nickName=$"{photonView.Owner.NickName}({photonView.OwnerActorNr})";
-        HP=DEFAULT_HP;
         //この後すぐにカードを引くとintHandArrayがnullになる
     }
 
     void Update()
     {
-        intHandNumText.text=playedCard.ToString();
+        // intHandNumText.text=playedCard.ToString();
         if(Input.GetMouseButtonDown(1))
         {
             Debug.Log(intHandArray.Count);
@@ -74,10 +72,6 @@ public class Player : MonoBehaviourPunCallbacks
         return playedCard;
     }
 
-    public int GetHP()
-    {
-        return HP;
-    }
     public void removeCard(int card)
     {
         intHandArray.Remove(card);

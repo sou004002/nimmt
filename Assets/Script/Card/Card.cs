@@ -46,6 +46,35 @@ public class Card : MonoBehaviourPunCallbacks
     {
         cardNum=n;
     }
+    public int GetCardDamage()
+    {
+        return cardDamage;
+    }
+    public void SetCardDamage(int n)
+    {
+        int d;
+        if(n==55)
+        {
+            d=7;
+        }
+        else if(n%11==0)
+        {
+            d=5;
+        }
+        else if(n%10==0)
+        {
+            d=3;
+        }
+        else if(n%5==0)
+        {
+            d=2;
+        }
+        else
+        {
+            d=1;
+        }
+        cardDamage=d;
+    }
     public void SetIsdrawing(bool b)
     {
         isDrawing=b;
@@ -66,6 +95,7 @@ public class Card : MonoBehaviourPunCallbacks
             backImage=transform.Find("BackImage").gameObject;
         }
         SetCardNum(number);
+        SetCardDamage(number);
         frontImage.GetComponent<SpriteRenderer>().sprite=images[number];
         backImage.GetComponent<SpriteRenderer>().sprite=images[0];
         _col.enabled=true;
